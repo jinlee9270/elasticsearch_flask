@@ -11,7 +11,7 @@ es = Elasticsearch(
             'scheme': "http"
         }
     ],
-    basic_auth=('elastic_id', 'elastic_password')
+    basic_auth=('id', 'pw')
 )
 
 # Set up the Flask app
