@@ -2,7 +2,7 @@ import pandas as pd
 from elasticsearch import Elasticsearch, helpers
 
 # Elasticsearch 클라이언트 생성
-es = Elasticsearch([{'host': 'localhost', 'port': 9200, 'scheme': "http"}], basic_auth=('id', 'pw'))
+es = Elasticsearch([{'host': '3.37.70.146', 'port': 9200, 'scheme': "http"}], basic_auth=('id', 'pw'))
 
 # CSV 파일을 pandas DataFrame으로 읽기
 df = pd.read_csv('modified_product_list_0911_2.csv')
