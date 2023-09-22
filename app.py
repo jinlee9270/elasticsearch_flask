@@ -6,12 +6,11 @@ import requests
 es = Elasticsearch(
     [
         {
-            'host': "3.37.70.146",
+            'host': "43.201.31.197",
             'port': 9200,
             'scheme': "http"
         }
-    ],
-    basic_auth=('id', 'pw')
+    ]
 )
 
 # Set up the Flask app
@@ -34,7 +33,7 @@ def create_es_query(query):
 def search_product_name():
     results = []
     query_list = request.args.getlist('query')
-    target_server_url = '3.37.70.146'  # 대상 서버의 엔드포인트 URL
+    target_server_url = '43.201.31.197'  # 대상 서버의 엔드포인트 URL
 
     try:
         for query in query_list:
