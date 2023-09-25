@@ -1,8 +1,9 @@
 import pandas as pd
 from elasticsearch import Elasticsearch, helpers
 
+host = '43.201.31.197'
 # Elasticsearch 클라이언트 생성
-es = Elasticsearch([{'host': '43.201.31.197', 'port': 9200, 'scheme': "http"}])
+es = Elasticsearch([{'host': host, 'port': 9200, 'scheme': "http"}])
 
 # CSV 파일을 pandas DataFrame으로 읽기
 df = pd.read_csv('modified_product_list_0911_2.csv')
@@ -21,7 +22,7 @@ for index, row in df.iterrows():
         unique_product_ids.add(product_id)
 
         doc = {
-            '_index': 'product_list',  # 인덱스 이름을 'product_list'로 설정 후에 날짜 추가로 바꿀 예정
+            '_index': 'product_list_v7',  # 인덱스 이름을 'product_list'로 설정 후에 날짜 추가로 바꿀 예정
             '_source': {
                 "mart_num": int(row['mart_num']),
                 "product_id": product_id,

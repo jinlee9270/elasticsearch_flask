@@ -1,12 +1,12 @@
 from elasticsearch import Elasticsearch
 from flask import Flask, jsonify, request
-import requests
 
+host = '43.201.31.197'
 # Connect to Elasticsearch
 es = Elasticsearch(
     [
         {
-            'host': "43.201.31.197",
+            'host': host,
             'port': 9200,
             'scheme': "http"
         }
@@ -19,37 +19,29 @@ app = Flask(__name__)
 
 def create_es_query(query):
     return {
-        "size": 10,
-        "query": {
-            "match": {
-                "product_name": query,
-            }
+        "match": {
+            "product_name": query,
         }
     }
 
 
 # Set up the search route
-@app.route('/search', methods=['GET'])
+@app.route('/', methods=['GET'])
 def search_product_name():
     results = []
     query_list = request.args.getlist('query')
-    target_server_url = '43.201.31.197'  # 대상 서버의 엔드포인트 URL
 
     try:
         for query in query_list:
             es_query = create_es_query(query)
-            response = requests.post(target_server_url, json={'query': query, 'es_query': es_query})
 
-            if response.status_code == 200:
-                results.append({
-                    'query': query,
-                    'results': response.json()  # 대상 서버의 응답을 결과로 추가
-                })
-            else:
-                results.append({
-                    'query': query,
-                    'error': 'Failed to fetch results from the target server'
-                })
+            search = es.search(index="product_list_v7", query=es_query, size=10)
+
+            hits = search['hits']['hits']
+
+            for hit in hits:
+                results.append(hit)
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -57,4 +49,4 @@ def search_product_name():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
