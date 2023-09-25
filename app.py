@@ -45,7 +45,9 @@ def search_product_name():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-    return jsonify(results)
+    response = jsonify(results)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 
 if __name__ == '__main__':
