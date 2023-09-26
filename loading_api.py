@@ -1,7 +1,7 @@
 import pandas as pd
 from elasticsearch import Elasticsearch, helpers
 
-host = '43.201.31.197'
+host = '43.201.164.141'
 # Elasticsearch 클라이언트 생성
 es = Elasticsearch([{'host': host, 'port': 9200, 'scheme': "http"}])
 

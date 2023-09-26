@@ -1,7 +1,7 @@
 from elasticsearch import Elasticsearch
 from flask import Flask, jsonify, request
 
-host = '43.201.31.197'
+host = '43.201.164.141'
 # Connect to Elasticsearch
 es = Elasticsearch(
     [
@@ -29,14 +29,23 @@ def create_es_query(query):
 @app.route('/', methods=['GET'])
 def search_product_name():
     results = []
-    query_list = request.args.getlist('query')
 
+    query_list = request.args.getlist('description_1')
+    # query_list = {"두부": "3장(약300g)",
+    #            "밀가루": "약1컵(140g)",
+    #            #  "식용유": "3큰술(21g)",
+    #            #  "달걀": "3개",
+    #            #  "맛소금": "약간(2g)",
+    #            #  "후추가루": "약간",
+    #            #  "식초": "2큰술(16g)",
+    #            #  "진간장": "1큰술(10g)",
+    #            #  "굵은고추가루": "약1/3큰술"
+    #           }
     try:
         for query in query_list:
+            print(query, query_list[query])
             es_query = create_es_query(query)
-
             search = es.search(index="product_list_v7", query=es_query, size=10)
-
             hits = search['hits']['hits']
 
             for hit in hits:
