@@ -40,10 +40,10 @@ def search_product_name():
             hits = search['hits']['hits']
 
             if query not in results:
-                results[query] = []
+                results[f'"{query}"'] = []
 
             for hit in hits:
-                results[query].append(hit)
+                results[f'"{query}"'].append(hit)
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
