@@ -1,5 +1,6 @@
 from elasticsearch import Elasticsearch
 from flask import Flask, jsonify, request
+import json
 
 host = '43.201.164.141'
 # Connect to Elasticsearch
@@ -31,6 +32,10 @@ def search_product_name():
     results = dict()
 
     query_list = request.args.getlist('description_1')
+    # obj = query_list[0]
+    # print(obj)
+    # print(json.loads(obj))
+
     # query_list = {"두부": "3장(약300g)",
     #            "밀가루": "약1컵(140g)",
     #             "식용유": "3큰술(21g)",
@@ -43,7 +48,7 @@ def search_product_name():
     #           }
     try:
         for query in query_list:
-            # print(query, query_list[query])
+            print(query)
             es_query = create_es_query(query)
             search = es.search(index="product_list_v7", query=es_query, size=10)
             print(query, search)
@@ -55,8 +60,9 @@ def search_product_name():
 
     response = jsonify(results)
     response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Content-Type", "application/json;charset=UTF-8")
     print(response.json)
-    return response.json
+    return response
 
 
 if __name__ == '__main__':
