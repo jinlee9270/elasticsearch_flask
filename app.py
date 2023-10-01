@@ -1,5 +1,6 @@
 from elasticsearch import Elasticsearch
 from flask import Flask, jsonify, request
+from flask_cors import CORS, cross_origin
 import json
 
 host = '43.201.164.141'
@@ -16,6 +17,8 @@ es = Elasticsearch(
 
 # Set up the Flask app
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 def create_es_query(query):
@@ -28,6 +31,7 @@ def create_es_query(query):
 
 # Set up the search route
 @app.route('/', methods=['POST'])
+@cross_origin()
 def search_product_name():
     results = dict()
 
