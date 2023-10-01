@@ -27,11 +27,10 @@ def create_es_query(query):
 
 
 # Set up the search route
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['POST'])
 def search_product_name():
     results = dict()
 
-    query_list = request.args.getlist('description_1')
     # obj = query_list[0]
     # print(obj)
     # print(json.loads(obj))
@@ -47,13 +46,12 @@ def search_product_name():
     #             "굵은고추가루": "약1/3큰술"
     #           }
     try:
-        for query in query_list:
-            print(query)
-            es_query = create_es_query(query)
+        for key, _ in request.json.items():
+            es_query = create_es_query(key)
             search = es.search(index="product_list_v7", query=es_query, size=10)
-            print(query, search)
+            print(key, search)
             hits = search['hits']['hits']
-            results[f"{query}"] = hits
+            results[f"{key}"] = hits
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
