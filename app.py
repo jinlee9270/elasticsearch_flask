@@ -31,7 +31,7 @@ def create_es_query(query):
 
 # Set up the search route
 @app.route('/', methods=['POST'])
-@cross_origin(origin='*')
+@cross_origin()
 def search_product_name():
     results = dict()
 
