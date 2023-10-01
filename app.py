@@ -61,7 +61,6 @@ def search_product_name():
         return jsonify({'error': str(e)}), 500
 
     response = jsonify(results)
-    response.headers.add("Access-Control-Allow-Origin", "*")
     response.headers.add("Content-Type", "application/json;charset=UTF-8")
     print(response.json)
     return response
