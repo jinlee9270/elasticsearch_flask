@@ -9,10 +9,13 @@ es = Elasticsearch([{'host': host, 'port': 9200, 'scheme': "http"}], basic_auth=
 
 # CSV 파일을 pandas DataFrame으로 읽기
 current_date = datetime.now().strftime('%Y%m%d')
-df = pd.read_csv(f'./after_NPL_without_delete/after_NPL_without_delete{current_date}.csv')
+# df = pd.read_csv(f'./after_NPL_without_delete/after_NPL_without_delete{current_date}.csv')
+df = pd.read_csv(f'./after_NPL_without_delete/after_NPL_without_delete20231013.csv')
 
 # loading 하려고 하는 index명
-index_name = f'product_list_{current_date}'
+# index_name = f'product_list_{current_date}'
+index_name = f'product_list_20231013'
+
 
 # 데이터프레임 순회
 docs = []
@@ -73,3 +76,4 @@ if docs:
             print(f"Error reason: {error['index']['error']['reason']}")
 
 print(f"Total failed documents: {len(fail_product_id)}")
+print("6번 파일 끝")
