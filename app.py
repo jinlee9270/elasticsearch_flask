@@ -2,6 +2,8 @@ from elasticsearch import Elasticsearch
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import json
+import csv
+import datetime
 
 host = '43.201.164.141'
 # Connect to Elasticsearch
@@ -13,6 +15,7 @@ es = Elasticsearch(
             'scheme': "http"
         }
     ]
+    , basic_auth=("elastic", "123456")
 )
 
 # Set up the Flask app
@@ -20,13 +23,38 @@ app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+# 현재 날짜를 가져옵니다.
+today = datetime.date.today().strftime("%Y%m%d")
 
-def create_es_query(query):
-    return {
-        "match": {
-            "product_name": query,
+# CSV 파일을 열고 데이터를 기록합니다.
+csv_filename = f"rank_name_{today}.csv"
+
+
+def create_es_query(keyword):
+    query = {
+        "bool": {
+            "should": [
+                {
+                    "match": {
+                        "name": {
+                            "query": keyword,
+                            "boost": 1.0
+                        }
+                    }
+                },
+                {
+                    "match": {
+                        "search": {
+                            "query": keyword,
+                            "boost": 2.0
+                        }
+                    }
+                }
+            ]
         }
     }
+
+    return query
 
 
 # Set up the search route
@@ -35,29 +63,24 @@ def create_es_query(query):
 def search_product_name():
     results = dict()
 
-    # obj = query_list[0]
-    # print(obj)
-    # print(json.loads(obj))
-
-    # query_list = {"두부": "3장(약300g)",
-    #            "밀가루": "약1컵(140g)",
-    #             "식용유": "3큰술(21g)",
-    #             "달걀": "3개",
-    #             "맛소금": "약간(2g)",
-    #             "후추가루": "약간",
-    #             "식초": "2큰술(16g)",
-    #             "진간장": "1큰술(10g)",
-    #             "굵은고추가루": "약1/3큰술"
-    #           }
+    print(request.json.items())
     try:
-        for key, _ in request.json.items():
-            es_query = create_es_query(key)
-            search = es.search(index="product_list_v7", query=es_query, size=10)
-            print(key, search)
-            hits = search['hits']['hits']
-            results[f"{key}"] = hits
+        with open(csv_filename, mode='w', newline='') as csv_file:
+            fieldnames = ['Key', 'Search Results']
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+
+            writer.writeheader()
+
+            for key, _ in request.json.items():
+                es_query = create_es_query(key)
+                search = es.search(index="product_list_20231013", query=es_query, size=10)
+                print(key, search)
+                hits = search['hits']['hits']
+                results[f"{key}"] = hits
+                writer.writerow({'Key': key, 'Search Results': str(hits)})
 
     except Exception as e:
+        app.logger.error(f"An error occurred: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
     response = jsonify(results)
@@ -68,3 +91,4 @@ def search_product_name():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
+

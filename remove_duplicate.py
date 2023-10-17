@@ -5,13 +5,15 @@ from elasticsearch import Elasticsearch
 host = '43.201.164.141'
 
 # Elasticsearch 클라이언트 생성
-es = Elasticsearch([{'host': host, 'port': 9200, 'scheme': "http"}])
+es = Elasticsearch([{'host': host, 'port': 9200, 'scheme': "http"}],  basic_auth=("elastic", "123456"))
 
 dict_of_duplicate_docs = {}
 
 # 다음 줄은 문서의 중복 여부를
 # 판단하는 데 사용될 필드를 정의합니다.
-keys_to_include_in_hash = ["update_date", "product_id", "mart_num"]
+keys_to_include_in_hash = ["add_date", "product_id", "mart_id"]
+
+delete_matching_keyword = '20231016'
 
 # 현재 검색/스크롤에 의해 반환된 문서를 처리합니다.
 def populate_dict_of_duplicate_docs(hits):
@@ -35,7 +37,7 @@ query = {"query": {"match_all": {}}}
 scroll = '1m'
 
 def scroll_over_all_docs():
-    data = es.search(index="product_list_v7", scroll=scroll,  body=query)
+    data = es.search(index=f"product_list_{delete_matching_keyword}", scroll=scroll,  body=query)
     # 스크롤 ID를 가져옵니다.
     sid = data['_scroll_id']
     scroll_size = len(data['hits']['hits'])
@@ -59,7 +61,8 @@ def remove_duplicate_docs():
             # 중복 문서 중에서 가장 처음 나오는 문서를 선택합니다.
             # 나머지 중복 문서를 삭제합니다.
             for doc_id_to_remove in array_of_ids[1:]:
-                es.delete(index="product_list_v7", id=doc_id_to_remove)
+                es.delete(index=f"product_list_{delete_matching_keyword}", id=doc_id_to_remove)
+
 
 def main():
     scroll_over_all_docs()
