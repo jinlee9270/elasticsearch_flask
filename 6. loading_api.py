@@ -2,19 +2,24 @@ import pandas as pd
 from elasticsearch import Elasticsearch, helpers
 from elasticsearch.helpers import BulkIndexError
 from datetime import datetime
+from decouple import config
 
-host = '43.201.164.141'
-# Elasticsearch 클라이언트 생성
-es = Elasticsearch([{'host': host, 'port': 9200, 'scheme': "http"}], basic_auth=("elastic", "123456"))
+es_host = config('es_host')
+es_port = config('es_port', cast=int)
+elasticID = config('elasticID')
+elasticPW = config('elasticPW')
+
+es = Elasticsearch([{'host': es_host, 'port': es_port, 'scheme': "http"}], basic_auth=(elasticID, elasticPW))
+print(es.ping())
 
 # CSV 파일을 pandas DataFrame으로 읽기
 current_date = datetime.now().strftime('%Y%m%d')
-# df = pd.read_csv(f'./after_NPL_without_delete/after_NPL_without_delete{current_date}.csv')
-df = pd.read_csv(f'./after_NPL_without_delete/after_NPL_without_delete20231013.csv')
+df = pd.read_csv(f'./after_NPL_without_delete/after_NPL_without_delete{current_date}.csv')
+# df = pd.read_csv(f'./after_NPL_without_delete/after_NPL_without_delete20231013.csv')
 
 # loading 하려고 하는 index명
-# index_name = f'product_list_{current_date}'
-index_name = f'product_list_20231013'
+index_name = f'product_list_{current_date}'
+# index_name = f'product_list_20231013'
 
 
 # 데이터프레임 순회

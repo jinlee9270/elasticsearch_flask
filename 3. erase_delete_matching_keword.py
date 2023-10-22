@@ -12,8 +12,8 @@ data = pd.read_csv(file_path)
 data = data[data['search'] != 'delete']
 
 # 결과를 새로운 CSV 파일로 저장 (선택사항)
-# output_file_path = f"after_NPL_without_delete/after_NPL_without_delete{current_date}.csv"
-output_file_path = "after_NPL_without_delete/after_NPL_without_delete20231013.csv"
+output_file_path = f"after_NPL_without_delete/after_NPL_without_delete{current_date}.csv"
+# output_file_path = "after_NPL_without_delete/after_NPL_without_delete20231013.csv"
 
 data.to_csv(output_file_path, index=False)
 

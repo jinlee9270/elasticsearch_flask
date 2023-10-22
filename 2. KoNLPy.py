@@ -6,8 +6,8 @@ import re
 komoran=Komoran()
 current_date = datetime.now().strftime('%Y%m%d')
 
-# data = pd.read_csv(f'data_from_s3/{current_date}.csv')
-data = pd.read_csv('data_from_s3/20231013.csv')
+data = pd.read_csv(f'data_from_s3/{current_date}.csv')
+# data = pd.read_csv('data_from_s3/20231013.csv')
 df = pd.DataFrame(data)
 
 df['search'] = ''
@@ -49,8 +49,8 @@ for index, row in df.iterrows():
         df.at[index, 'search'] = '후랑크'
 
 
-# csv_filename = f'./after_NPL/after_NPL_{current_date}.csv'
-csv_filename = './after_NPL/after_NPL_20231013.csv'
+csv_filename = f'./after_NPL/after_NPL_{current_date}.csv'
+# csv_filename = './after_NPL/after_NPL_20231013.csv'
 df.to_csv(csv_filename, index=False)
 
 print("2번 파일 끝")

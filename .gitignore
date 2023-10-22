@@ -296,5 +296,9 @@ pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,python,pycharm+all
 
-#안쓰는거 폴더에 있는 파일 전체 안올릴꺼
+
 안쓰는거/
+after_NPL/
+after_NPL_without_delete/
+data_from_s3/
+node_modules/

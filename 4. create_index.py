@@ -1,10 +1,13 @@
 from elasticsearch import Elasticsearch
 from datetime import datetime
+from decouple import config
 
-es_host = "43.201.164.141"
-es_port = 9200
+es_host = config('es_host')
+es_port = config('es_port', cast=int)
+elasticID = config('elasticID')
+elasticPW = config('elasticPW')
 
-es = Elasticsearch([{'host': es_host, 'port': es_port, 'scheme': "http"}], basic_auth=("elastic", "123456"))
+es = Elasticsearch([{'host': es_host, 'port': es_port, 'scheme': "http"}], basic_auth=(elasticID, elasticPW))
 print(es.ping())
 
 
@@ -12,8 +15,8 @@ print(es.ping())
 current_date = datetime.now().strftime('%Y%m%d')
 
 # Define the index name
-# index_name = f'product_list_{current_date}'
-index_name = 'product_list_20231013'
+index_name = f'product_list_{current_date}'
+# index_name = 'product_list_20231013'
 
 
 settings = {

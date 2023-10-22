@@ -1,19 +1,21 @@
 import boto3
 import pandas as pd
 from datetime import datetime
+from decouple import config
 
-Access_key_ID = "AKIA6KJG2ZM3NM2YWJCK"
-Secret_access_key = "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"
-region_name = "ap-northeast-2"
-bucket_name = "scvfile"
-prefix = "backup_product_list"
+Access_key_ID = config('Access_key_ID')
+Secret_access_key = config('Secret_access_key')
+region_name = config('region_name')
+bucket_name = config('bucket_name')
+prefix = config('prefix')
 
 s3 = boto3.client('s3', aws_access_key_id=Access_key_ID, aws_secret_access_key=Secret_access_key, region_name=region_name)
 obj_list = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
 s3_format_current_date = datetime.now().strftime('%Y-%m-%d')
 print(s3_format_current_date)
-# csv_filename = f"backup_product_list/modified_products_list_{s3_format_current_date}.csv"
-csv_filename = "backup_product_list/modified_products_list_2023-10-15.csv"
+
+csv_filename = f"backup_product_list/modified_products_list_{s3_format_current_date}.csv"
+# csv_filename = "backup_product_list/modified_products_list_2023-10-15.csv"
 current_date = datetime.now().strftime('%Y%m%d')
 
 try:
